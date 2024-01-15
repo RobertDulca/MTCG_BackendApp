@@ -1,38 +1,36 @@
 package fhtechnikum.robert.server;
 
+import fhtechnikum.robert.system.Router;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 public class Server {
 
-    private ServerSocket server;
+    private final int PORT = 10001;
+    private final Router router;
+    private static final Logger logger = Logger.getLogger(Server.class.getName());
 
-    private final ServerApplication app;
-
-    public Server(ServerApplication app) {
-        this.app = app;
+    public Server(Router router) {
+        this.router = router;
     }
 
     public void start() {
-        try {
-            server = new ServerSocket(10001);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            logger.info("Server listening on port: " + PORT + "\n");
 
-        System.out.println("Server started on http://localhost:10001");
+            while (true) {
+                Socket socket = serverSocket.accept();
+                logger.info("Accepted connection from: " + socket.getInetAddress() + "\n");
 
-        while (true) {
-            try {
-                Socket socket = server.accept();
+                RequestHandler request = new RequestHandler(socket, router);
 
-                RequestHandler handler = new RequestHandler(socket, app);
-                handler.handle();
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                new Thread(request).start();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

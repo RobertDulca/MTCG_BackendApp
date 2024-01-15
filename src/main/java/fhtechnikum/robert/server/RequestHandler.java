@@ -2,73 +2,60 @@ package fhtechnikum.robert.server;
 
 import fhtechnikum.robert.server.http.Request;
 import fhtechnikum.robert.server.http.Response;
-import fhtechnikum.robert.server.util.HttpMapper;
+import fhtechnikum.robert.system.Controller;
+import fhtechnikum.robert.system.Router;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.net.Socket;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class RequestHandler {
+public class RequestHandler implements Runnable {
+    private final Socket socket;
+    private final Router router;
+    private BufferedReader br;
+    private OutputStream out;
 
-    private BufferedReader in;
-    private PrintWriter out;
-
-    private final Socket client;
-
-    private final ServerApplication app;
-
-    public RequestHandler(Socket client, ServerApplication app) {
-        this.client = client;
-        this.app = app;
+    public RequestHandler(Socket socket, Router router) {
+        this.socket = socket;
+        this.router = router;
     }
 
-    public void handle() throws IOException {
-        in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+    @Override
+    public void run() {
+        try {
+            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            Request request = new Request(br);
+            Response response = new Response();
 
-        String httpRequest = getHttpStringFromStream(in);
+            Controller controller = router.route(request.getPath());
+            if (controller != null)
+                response = controller.process(request);
 
-        Request request = HttpMapper.toRequestObject(httpRequest);
-        Response response = app.handle(request);
-
-        out = new PrintWriter(client.getOutputStream(), true);
-        out.write(HttpMapper.toResponseString(response));
-
-        out.close();
-        in.close();
-        client.close();
+            out = socket.getOutputStream();
+            out.write(response.responseBuilder().getBytes());
+            out.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeClient();
+        }
     }
 
-    // THOUGHT: create a SocketReader class
-    private String getHttpStringFromStream(BufferedReader in) throws IOException {
-        StringBuilder builder = new StringBuilder();
 
-        String inputLine;
-        while ((inputLine = in.readLine()) != null && !inputLine.equals("")) {
-            builder
-                    .append(inputLine)
-                    .append(System.lineSeparator());
+    private void closeClient() {
+        try {
+            if (br != null)
+                br.close();
+
+            if (out != null)
+                out.close();
+
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-
-        String httpRequest = builder.toString();
-
-        Pattern regex = Pattern.compile("^Content-Length:\\s(.+)", Pattern.MULTILINE);
-        Matcher matcher = regex.matcher(httpRequest);
-
-        if (!matcher.find()) {
-            return builder.toString();
-        }
-
-        builder.append(System.lineSeparator());
-
-        int contentLength = Integer.parseInt(matcher.group(1));
-        char[] buffer = new char[contentLength];
-        in.read(buffer, 0, contentLength);
-        builder.append(buffer);
-
-        return builder.toString();
     }
 }
+

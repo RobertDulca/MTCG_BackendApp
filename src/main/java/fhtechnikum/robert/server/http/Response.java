@@ -2,33 +2,29 @@ package fhtechnikum.robert.server.http;
 
 public class Response {
 
-    private int statusCode;
-
-    private String statusMessage;
-
-    private String contentType;
-
+    private String contentType = "text/plain";
+    private HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
     private String body;
 
-    public void setStatus(HttpStatus httpStatus) {
-        this.statusCode = httpStatus.getCode();
-        this.statusMessage = httpStatus.getMessage();
+    protected String responseBuilder() {
+        return "HTTP/1.1 " + httpStatus.getCode() + " " + httpStatus.getMessage() + "\n" +
+                "Content-Type: " + contentType + "\n" +
+                "\n" +
+                body;
     }
-
-    public int getStatusCode() {
-        return statusCode;
-    }
-
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
     public String getContentType() {
         return contentType;
     }
 
-    public void setContentType(HttpContentType httpContentType) {
-        this.contentType = httpContentType.getMimeType();
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+    public Status getHttpStatus() {
+        return httpStatus;
+    }
+
+    public void setHttpStatus(Status httpStatus) {
+        this.httpStatus = httpStatus;
     }
 
     public String getBody() {
