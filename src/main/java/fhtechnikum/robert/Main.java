@@ -1,6 +1,5 @@
 package fhtechnikum.robert;
 
-import fhtechnikum.robert.apps.mtcg.MtcgApp;
 import fhtechnikum.robert.server.Server;
 
 public class Main {
