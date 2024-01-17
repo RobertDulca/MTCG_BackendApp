@@ -1,7 +1,6 @@
 package fhtechnikum.robert.system;
 
 
-import fhtechnikum.robert.application.user.LoginController;
 import fhtechnikum.robert.application.user.UserController;
 import fhtechnikum.robert.application.user.UserRepository;
 
@@ -17,7 +16,6 @@ public class Router {
         this.repositories = repositories;
 
         UserController userController = new UserController((UserRepository) repositories.get("user"));
-        LoginController loginController = new LoginController((UserRepository) repositories.get("user"));
         /*PackagesController packagesController = new PackagesController((PackageRepository) repositories.get("package"));
         TransactionController transactionController = new TransactionController((PackageRepository) repositories.get("package"));
         CardsController cardsController = new CardsController((CardRepository) repositories.get("card"));
@@ -29,7 +27,7 @@ public class Router {
 
 
         handler.put("/users", userController);
-        handler.put("/sessions", loginController);
+        handler.put("/sessions", userController);
         /*handler.put("/packages", packagesController);
         handler.put("/transactions/packages", transactionController);
         handler.put("/cards", cardsController);

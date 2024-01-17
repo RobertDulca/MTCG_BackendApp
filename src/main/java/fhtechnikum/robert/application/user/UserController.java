@@ -4,6 +4,8 @@ import fhtechnikum.robert.server.http.HttpStatus;
 import fhtechnikum.robert.server.http.Request;
 import fhtechnikum.robert.server.http.Response;
 
+import java.util.Objects;
+
 public class UserController implements fhtechnikum.robert.system.Controller {
     public UserController(UserRepository userRepo) {
         this.userRepo = userRepo;
@@ -12,13 +14,17 @@ public class UserController implements fhtechnikum.robert.system.Controller {
     private final UserRepository userRepo;
     @Override
     public Response process(Request request) {
-        switch (request.getMethod()) {
-
-            case "POST":
-                return registerUser(request);
-
+        if (Objects.equals(request.getPath(), "/users")) {
+            switch (request.getMethod()) {
+                case "POST":
+                    return registerUser(request);
+            }
+        } else if (Objects.equals(request.getPath(), "/sessions")) {
+            switch (request.getMethod()) {
+                case "POST":
+                    return loginUser(request.getBodyAs(User.class));
+            }
         }
-
         response.setBody("Wrong method!");
         response.setHttpStatus(HttpStatus.BAD_REQUEST);
 
@@ -36,6 +42,20 @@ public class UserController implements fhtechnikum.robert.system.Controller {
         } else {
             response.setHttpStatus(HttpStatus.CONFLICT);
             response.setBody("User with same username already registered");
+        }
+        return response;
+    }
+
+    private Response loginUser(User cred) {
+        String token;
+
+        if ((token = userRepo.loginUser(cred.getUsername(), cred.getPassword())) != null) {
+            response.setHttpStatus(HttpStatus.OK);
+            response.setContentType("application/json");
+            response.setBody(token);
+        } else {
+            response.setHttpStatus(HttpStatus.UNAUTHORIZED);
+            response.setBody("Invalid username/password provided");
         }
         return response;
     }
