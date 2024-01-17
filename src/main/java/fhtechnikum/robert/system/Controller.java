@@ -6,7 +6,6 @@ import fhtechnikum.robert.server.http.Response;
 
 public interface Controller {
     Response response = new Response();
-    //TODO: Model Serializer needs to be done to create the body of the response
-    ModelSerializer serializer = new ModelSerializer();
+    EntitySerializer serializer = new EntitySerializer();
     Response process(Request request);
 }
