@@ -35,21 +35,62 @@ public class UserRepository extends fhtechnikum.robert.system.Repository {
     public String findUser(String username) {
         String query = "SELECT * FROM users WHERE username = ?";
 
-        try (Connection connection = Database.getConnection()) {
-            assert connection != null;
-            try (PreparedStatement stmt = connection.prepareStatement(query)){
-                stmt.setString(1, username);
+        try (
+                Connection connection = Database.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(query)
+        ) {
+            stmt.setString(1, username);
 
-                ResultSet result = stmt.executeQuery();
+            ResultSet result = stmt.executeQuery();
 
-                if (result.next())
-                    return result.getString("username");
-            } finally {
-                Database.closeConnection(connection);
-            }
+            if (result.next())
+                return result.getString("username");
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String loginUser(String username, String password) {
+        if (authenticateLogin(username, password)) {
+            String token = username + "-mtcgToken";
+            String query = "INSERT INTO session (username, token) VALUES (?, ?)";
+
+            try (
+                    Connection connection = Database.getConnection();
+                    PreparedStatement stmt = connection.prepareStatement(query)
+            ) {
+                    stmt.setString(1, username);
+                    stmt.setString(2, token);
+
+                    int result = stmt.executeUpdate();
+
+                    if (result != 0)
+                        return token;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public boolean authenticateLogin(String username, String password) {
+        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+
+        try (
+                Connection connection = Database.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(query)
+        ) {
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+
+                ResultSet result = stmt.executeQuery();
+
+                if (result.next())
+                    return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
