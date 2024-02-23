@@ -57,3 +57,5 @@ create table Trade (
                        minDmg int,
                        element varchar(50)
 );
+
+drop table if exists users, stats, packages, cards, session, decks, trade;

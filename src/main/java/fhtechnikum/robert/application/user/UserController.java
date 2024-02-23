@@ -14,12 +14,12 @@ public class UserController implements fhtechnikum.robert.system.Controller {
     private final UserRepository userRepo;
     @Override
     public Response process(Request request) {
-        if (Objects.equals(request.getPath(), "/users")) {
+        if (Objects.equals(request.getRoute(), "/users")) {
             switch (request.getMethod()) {
                 case "POST":
                     return registerUser(request);
             }
-        } else if (Objects.equals(request.getPath(), "/sessions")) {
+        } else if (Objects.equals(request.getRoute(), "/sessions")) {
             switch (request.getMethod()) {
                 case "POST":
                     return loginUser(request.getBodyAs(User.class));

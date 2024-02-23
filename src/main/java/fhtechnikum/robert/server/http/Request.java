@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class Request {
 
     private String method;
-    private String path;
+    private String route;
     private String body;
     private String token;
     private String username;
@@ -36,21 +36,21 @@ public class Request {
             final String[] splitVersionString = versionString.split(" ");
 
             method = splitVersionString[0];
-            path = splitVersionString[1];
+            route = splitVersionString[1];
 
-            if (path.startsWith("/users/")) {
-                pathUser = path.substring("/users/".length());
-                path = "/users";
+            if (route.startsWith("/users/")) {
+                pathUser = route.substring("/users/".length());
+                route = "/users";
             }
 
-            if (path.startsWith("/tradings/")) {
-                tradingId = path.substring("/tradings/".length());
-                path = "/tradings";
+            if (route.startsWith("/tradings/")) {
+                tradingId = route.substring("/tradings/".length());
+                route = "/tradings";
             }
 
-            if (path.startsWith("/deck?")) {
-                format = path.substring("/deck?format=".length());
-                path = "/deck";
+            if (route.startsWith("/deck?")) {
+                format = route.substring("/deck?format=".length());
+                route = "/deck";
             }
 
             String line;
@@ -70,7 +70,7 @@ public class Request {
             br.read(buffer, 0, contentLength);
             body = new String(buffer);
 
-            logger.info("Method: " + method + "\nPath: " + path + "\nBody: " + body);
+            logger.info("Method: " + method + "\nPath: " + route + "\nBody: " + body);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,12 +83,12 @@ public class Request {
         this.method = method;
     }
 
-    public String getPath() {
-        return path;
+    public String getRoute() {
+        return route;
     }
 
     public void setPath(String path) {
-        this.path = path;
+        this.route = path;
     }
 
     public String getBody() {
