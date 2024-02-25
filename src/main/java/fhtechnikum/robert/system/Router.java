@@ -1,6 +1,8 @@
 package fhtechnikum.robert.system;
 
 
+import fhtechnikum.robert.application.cards.CardController;
+import fhtechnikum.robert.application.cards.CardRepository;
 import fhtechnikum.robert.application.packages.PackagesController;
 import fhtechnikum.robert.application.packages.PackagesRepository;
 import fhtechnikum.robert.application.transactions.TransactionsController;
@@ -22,8 +24,8 @@ public class Router {
         UserController userController = new UserController((UserRepository) repositories.get("user"));
         PackagesController packagesController = new PackagesController((PackagesRepository) repositories.get("package"));
         TransactionsController transactionController = new TransactionsController((TransactionsRepository) repositories.get("transaction"));
-        /*CardsController cardsController = new CardsController((CardRepository) repositories.get("card"));
-        DeckController deckController = new DeckController((CardRepository) repositories.get("card"));
+        CardController cardsController = new CardController((CardRepository) repositories.get("card"));
+        /*DeckController deckController = new DeckController((CardRepository) repositories.get("card"));
         StatsController statsController = new StatsController((GameRepository) repositories.get("game"));
         ScoreboardController scoreboardController = new ScoreboardController((GameRepository) repositories.get("game"));
         BattleController battleController = new BattleController((GameRepository) repositories.get("game"));
@@ -34,8 +36,8 @@ public class Router {
         handler.put("/sessions", userController);
         handler.put("/packages", packagesController);
         handler.put("/transactions/packages", transactionController);
-        /*handler.put("/cards", cardsController);
-        handler.put("/deck", deckController);
+        handler.put("/cards", cardsController);
+        /*handler.put("/deck", deckController);
         handler.put("/stats", statsController);
         handler.put("/score", scoreboardController);
         handler.put("/battles", battleController);
