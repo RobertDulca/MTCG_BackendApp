@@ -1,5 +1,6 @@
 package fhtechnikum.robert.system;
 
+import fhtechnikum.robert.application.packages.PackagesRepository;
 import fhtechnikum.robert.application.user.UserRepository;
 
 import java.util.HashMap;
@@ -14,9 +15,11 @@ public class ReposManager {
         repositories = new HashMap<>();
 
         UserRepository userRepo = new UserRepository();
+        PackagesRepository packageRepo = new PackagesRepository();
 
 
         repositories.put("user", userRepo);
+        repositories.put("package", packageRepo);
 
     }
 

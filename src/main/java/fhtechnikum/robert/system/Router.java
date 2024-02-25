@@ -1,6 +1,8 @@
 package fhtechnikum.robert.system;
 
 
+import fhtechnikum.robert.application.packages.PackagesController;
+import fhtechnikum.robert.application.packages.PackagesRepository;
 import fhtechnikum.robert.application.user.UserController;
 import fhtechnikum.robert.application.user.UserRepository;
 
@@ -16,8 +18,8 @@ public class Router {
         this.repositories = repositories;
 
         UserController userController = new UserController((UserRepository) repositories.get("user"));
-        /*PackagesController packagesController = new PackagesController((PackageRepository) repositories.get("package"));
-        TransactionController transactionController = new TransactionController((PackageRepository) repositories.get("package"));
+        PackagesController packagesController = new PackagesController((PackagesRepository) repositories.get("package"));
+        /*TransactionController transactionController = new TransactionController((PackageRepository) repositories.get("package"));
         CardsController cardsController = new CardsController((CardRepository) repositories.get("card"));
         DeckController deckController = new DeckController((CardRepository) repositories.get("card"));
         StatsController statsController = new StatsController((GameRepository) repositories.get("game"));
@@ -28,8 +30,8 @@ public class Router {
 
         handler.put("/users", userController);
         handler.put("/sessions", userController);
-        /*handler.put("/packages", packagesController);
-        handler.put("/transactions/packages", transactionController);
+        handler.put("/packages", packagesController);
+        /*handler.put("/transactions/packages", transactionController);
         handler.put("/cards", cardsController);
         handler.put("/deck", deckController);
         handler.put("/stats", statsController);

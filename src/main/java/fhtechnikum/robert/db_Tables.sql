@@ -58,4 +58,4 @@ create table Trade (
                        element varchar(50)
 );
 
-drop table if exists users, stats, packages, cards, session, decks, trade;
+drop table if exists cards;

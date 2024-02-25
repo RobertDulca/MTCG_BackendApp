@@ -29,7 +29,7 @@ public class RequestHandler implements Runnable {
             Request request = new Request(br);
             Response response = new Response();
 
-            Controller controller = router.route(request.getPath());
+            Controller controller = router.route(request.getRoute());
             if (controller != null)
                 response = controller.process(request);
 
