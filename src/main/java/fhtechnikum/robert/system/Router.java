@@ -3,6 +3,8 @@ package fhtechnikum.robert.system;
 
 import fhtechnikum.robert.application.cards.CardController;
 import fhtechnikum.robert.application.cards.CardRepository;
+import fhtechnikum.robert.application.deck.DeckController;
+import fhtechnikum.robert.application.deck.DeckRepository;
 import fhtechnikum.robert.application.packages.PackagesController;
 import fhtechnikum.robert.application.packages.PackagesRepository;
 import fhtechnikum.robert.application.transactions.TransactionsController;
@@ -25,8 +27,8 @@ public class Router {
         PackagesController packagesController = new PackagesController((PackagesRepository) repositories.get("package"));
         TransactionsController transactionController = new TransactionsController((TransactionsRepository) repositories.get("transaction"));
         CardController cardsController = new CardController((CardRepository) repositories.get("card"));
-        /*DeckController deckController = new DeckController((CardRepository) repositories.get("card"));
-        StatsController statsController = new StatsController((GameRepository) repositories.get("game"));
+        DeckController deckController = new DeckController((DeckRepository) repositories.get("deck"), (CardRepository) repositories.get("card"));
+        /*StatsController statsController = new StatsController((GameRepository) repositories.get("game"));
         ScoreboardController scoreboardController = new ScoreboardController((GameRepository) repositories.get("game"));
         BattleController battleController = new BattleController((GameRepository) repositories.get("game"));
         TradingController tradingController = new TradingController((TradingRepository) repositories.get("trade"));*/
@@ -37,8 +39,8 @@ public class Router {
         handler.put("/packages", packagesController);
         handler.put("/transactions/packages", transactionController);
         handler.put("/cards", cardsController);
-        /*handler.put("/deck", deckController);
-        handler.put("/stats", statsController);
+        handler.put("/deck", deckController);
+        /*handler.put("/stats", statsController);
         handler.put("/score", scoreboardController);
         handler.put("/battles", battleController);
         handler.put("/tradings", tradingController);*/
