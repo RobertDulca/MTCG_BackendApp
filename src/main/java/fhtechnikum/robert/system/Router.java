@@ -7,6 +7,8 @@ import fhtechnikum.robert.application.deck.DeckController;
 import fhtechnikum.robert.application.deck.DeckRepository;
 import fhtechnikum.robert.application.packages.PackagesController;
 import fhtechnikum.robert.application.packages.PackagesRepository;
+import fhtechnikum.robert.application.scoreboard.ScoreboardController;
+import fhtechnikum.robert.application.scoreboard.ScoreboardRepository;
 import fhtechnikum.robert.application.stats.StatsController;
 import fhtechnikum.robert.application.stats.StatsRepository;
 import fhtechnikum.robert.application.transactions.TransactionsController;
@@ -31,8 +33,8 @@ public class Router {
         CardController cardsController = new CardController((CardRepository) repositories.get("card"));
         DeckController deckController = new DeckController((DeckRepository) repositories.get("deck"), (CardRepository) repositories.get("card"));
         StatsController statsController = new StatsController((StatsRepository) repositories.get("stats"));
-        /*ScoreboardController scoreboardController = new ScoreboardController((GameRepository) repositories.get("game"));
-        BattleController battleController = new BattleController((GameRepository) repositories.get("game"));
+        ScoreboardController scoreboardController = new ScoreboardController((ScoreboardRepository) repositories.get("scoreboard"));
+        /*BattleController battleController = new BattleController((GameRepository) repositories.get("game"));
         TradingController tradingController = new TradingController((TradingRepository) repositories.get("trade"));*/
 
 
@@ -43,8 +45,8 @@ public class Router {
         handler.put("/cards", cardsController);
         handler.put("/deck", deckController);
         handler.put("/stats", statsController);
-        /*handler.put("/score", scoreboardController);
-        handler.put("/battles", battleController);
+        handler.put("/scoreboard", scoreboardController);
+        /*handler.put("/battles", battleController);
         handler.put("/tradings", tradingController);*/
     }
 

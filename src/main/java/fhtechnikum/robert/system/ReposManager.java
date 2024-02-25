@@ -3,6 +3,7 @@ package fhtechnikum.robert.system;
 import fhtechnikum.robert.application.cards.CardRepository;
 import fhtechnikum.robert.application.deck.DeckRepository;
 import fhtechnikum.robert.application.packages.PackagesRepository;
+import fhtechnikum.robert.application.scoreboard.ScoreboardRepository;
 import fhtechnikum.robert.application.stats.StatsRepository;
 import fhtechnikum.robert.application.transactions.TransactionsRepository;
 import fhtechnikum.robert.application.user.UserRepository;
@@ -24,6 +25,7 @@ public class ReposManager {
         CardRepository cardRepo = new CardRepository();
         DeckRepository deckRepo = new DeckRepository();
         StatsRepository statsRepo = new StatsRepository();
+        ScoreboardRepository scoreboardRepo = new ScoreboardRepository();
 
 
         repositories.put("user", userRepo);
@@ -32,6 +34,7 @@ public class ReposManager {
         repositories.put("card", cardRepo);
         repositories.put("deck", deckRepo);
         repositories.put("stats", statsRepo);
+        repositories.put("scoreboard", scoreboardRepo);
     }
 
     public Map<String, Repository> getRepositories() {
