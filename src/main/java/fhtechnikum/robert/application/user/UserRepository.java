@@ -7,6 +7,54 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class UserRepository extends fhtechnikum.robert.system.Repository {
+    public boolean updateUser(String username, UserProfile profile) {
+        String query = "UPDATE users SET name = ?, bio = ?, image = ? WHERE username = ?";
+
+        try (Connection connection = Database.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, profile.getName());
+                stmt.setString(2, profile.getBio());
+                stmt.setString(3, profile.getImage());
+                stmt.setString(4, username);
+
+                int result = stmt.executeUpdate();
+
+                if (result > 0)
+                    return true;
+            } finally {
+                Database.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public UserProfile getProfile(String username) {
+        UserProfile profile = new UserProfile();
+        String query = "SELECT name, bio, image FROM users WHERE username = ?";
+
+        try (Connection connection = Database.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, username);
+
+                ResultSet result = stmt.executeQuery();
+
+                if (result.next()) {
+                    profile.setName(result.getString("name"));
+                    profile.setBio(result.getString("bio"));
+                    profile.setImage(result.getString("image"));
+                    return profile;
+                }
+            } finally {
+                Database.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public boolean createUser(String username, String password) {
         String query = "INSERT INTO users (username, password, coins) VALUES (?, ?, ?)";
 

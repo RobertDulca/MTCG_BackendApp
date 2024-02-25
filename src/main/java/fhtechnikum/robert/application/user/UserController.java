@@ -18,6 +18,10 @@ public class UserController implements fhtechnikum.robert.system.Controller {
             switch (request.getMethod()) {
                 case "POST":
                     return registerUser(request);
+                case "GET":
+                    return getUserData(request);
+                case "PUT":
+                    return updateUser(request);
             }
         } else if (Objects.equals(request.getRoute(), "/sessions")) {
             switch (request.getMethod()) {
@@ -28,6 +32,50 @@ public class UserController implements fhtechnikum.robert.system.Controller {
         response.setBody("Wrong method!");
         response.setHttpStatus(HttpStatus.BAD_REQUEST);
 
+        return response;
+    }
+
+    private Response updateUser(Request request) {
+        UserProfile profile = request.getBodyAs(UserProfile.class);
+        String username = request.getUsername();
+        String token = request.getToken();
+        String pathUser = request.getPathUser();
+
+        if (userRepo.authenticate(username, token) && (username.equals(pathUser) || username.equals("admin"))) {
+            if (userRepo.updateUser(pathUser, profile)) {
+                response.setHttpStatus(HttpStatus.OK);
+                response.setBody("User successfully updated");
+            } else {
+                response.setHttpStatus(HttpStatus.NOT_FOUND);
+                response.setBody("User not found");
+            }
+        } else {
+            response.setHttpStatus(HttpStatus.UNAUTHORIZED);
+            response.setBody("Access token is missing or invalid");
+        }
+        return response;
+    }
+
+    private Response getUserData(Request request) {
+        String username = request.getUsername();
+        String token = request.getToken();
+        String pathUser = request.getPathUser();
+
+        if (userRepo.authenticate(username, token) && (username.equals(pathUser) || username.equals("admin"))) {
+            UserProfile userProfile = userRepo.getProfile(pathUser);
+
+            if(userProfile != null) {
+                response.setHttpStatus(HttpStatus.OK);
+                response.setContentType("application/json");
+                response.setBody(serializer.serialize(userProfile));
+            } else {
+                response.setHttpStatus(HttpStatus.NOT_FOUND);
+                response.setBody("User not found");
+            }
+        } else {
+            response.setHttpStatus(HttpStatus.UNAUTHORIZED);
+            response.setBody("Access token is missing or invalid");
+        }
         return response;
     }
 
