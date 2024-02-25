@@ -1,6 +1,7 @@
 package fhtechnikum.robert.system;
 
 import fhtechnikum.robert.application.packages.PackagesRepository;
+import fhtechnikum.robert.application.transactions.TransactionsRepository;
 import fhtechnikum.robert.application.user.UserRepository;
 
 import java.util.HashMap;
@@ -16,11 +17,12 @@ public class ReposManager {
 
         UserRepository userRepo = new UserRepository();
         PackagesRepository packageRepo = new PackagesRepository();
+        TransactionsRepository transactionRepo = new TransactionsRepository();
 
 
         repositories.put("user", userRepo);
         repositories.put("package", packageRepo);
-
+        repositories.put("transaction", transactionRepo);
     }
 
     public Map<String, Repository> getRepositories() {
