@@ -33,7 +33,8 @@ create table Cards (
                        name varchar(255) not null,
                        damage float not null,
                        monster_type boolean not null,
-                       element_type varchar(50) not null
+                       element_type varchar(50) not null,
+                       locked boolean default false not null
 );
 
 create table Session (
@@ -54,8 +55,7 @@ create table Trade (
                        trade_id varchar(255) not null,
                        card_id varchar(255) not null,
                        type varchar(50) not null,
-                       minDmg int,
-                       element varchar(50)
+                       minDmg int
 );
 
 drop table if exists cards, packages, stats, users, session, decks, trade;

@@ -13,6 +13,8 @@ import fhtechnikum.robert.application.scoreboard.ScoreboardController;
 import fhtechnikum.robert.application.scoreboard.ScoreboardRepository;
 import fhtechnikum.robert.application.stats.StatsController;
 import fhtechnikum.robert.application.stats.StatsRepository;
+import fhtechnikum.robert.application.trading.TradingController;
+import fhtechnikum.robert.application.trading.TradingRepository;
 import fhtechnikum.robert.application.transactions.TransactionsController;
 import fhtechnikum.robert.application.transactions.TransactionsRepository;
 import fhtechnikum.robert.application.user.UserController;
@@ -37,7 +39,7 @@ public class Router {
         StatsController statsController = new StatsController((StatsRepository) repositories.get("stats"));
         ScoreboardController scoreboardController = new ScoreboardController((ScoreboardRepository) repositories.get("scoreboard"));
         BattleController battleController = new BattleController((BattleRepository) repositories.get("battle"));
-        /*TradingController tradingController = new TradingController((TradingRepository) repositories.get("trade"));*/
+        TradingController tradingController = new TradingController((TradingRepository) repositories.get("trade"));
 
 
         handler.put("/users", userController);
@@ -49,7 +51,7 @@ public class Router {
         handler.put("/stats", statsController);
         handler.put("/scoreboard", scoreboardController);
         handler.put("/battles", battleController);
-        /*handler.put("/tradings", tradingController);*/
+        handler.put("/tradings", tradingController);
     }
 
     public Controller route(String path) {
