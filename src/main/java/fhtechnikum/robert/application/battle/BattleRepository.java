@@ -43,15 +43,11 @@ public class BattleRepository extends Repository {
 
     CardRepository cardRepo;
     StringBuilder battleLogger = new StringBuilder();
+    private static final double luck = 0.18;
 
     public String startBattle(String player1, String player2) {
         List<Card> player1_Deck = cardRepo.showCards(player1, "decks");
         List<Card> player2_Deck = cardRepo.showCards(player2, "decks");
-
-
-        /*if (player1.equals(player2))
-            return "You can't fight yourself";*/
-        //battleLogger.delete(0, battleLogger.length());
 
         BattleOutcome result = battle(player1, player2, player1_Deck, player2_Deck);
         updateStats(player1, player2, result);
@@ -64,6 +60,7 @@ public class BattleRepository extends Repository {
         long seed2 = System.currentTimeMillis();
         Random random1 = new Random(seed1);
         Random random2 = new Random(seed2);
+        Random luckRandom = new Random(seed1);
         int round = 0;
 
         while (round < 100) {
@@ -73,6 +70,10 @@ public class BattleRepository extends Repository {
             battleLogger.append("Round").append(round).append(": ").append(player1).append("'s ").append(player1_card.getCardName()).append(" (")
                     .append(player1_card.getDamage()).append(" Damage) VS ").append(player2).append("'s ")
                     .append(player2_card.getCardName()).append(" (").append(player2_card.getDamage()).append(" Damage):\n");
+
+            if (luckRandom.nextDouble() < luck) {
+                luckyMoment(player1, player1_card, player2, player2_card);
+            }
 
             BattleOutcome result = fight(player1_card, player2_card);
 
@@ -98,6 +99,19 @@ public class BattleRepository extends Repository {
         }
 
         return BattleOutcome.DRAW;
+    }
+
+    private void luckyMoment(String player1, Card player1Card, String player2, Card player2Card) {
+        Random random = new Random();
+        int boost = random.nextInt(2);
+
+        if (boost == 0) {
+            battleLogger.append(player1).append("'s ").append(player1Card.getCardName()).append(" has a lucky moment and deals double damage!\n");
+            player1Card.setDamage((float) (player1Card.getDamage() * 2));
+        } else {
+            battleLogger.append(player2).append("'s ").append(player2Card.getCardName()).append(" has a lucky moment and deals double damage!\n");
+            player2Card.setDamage((float) (player2Card.getDamage() * 2));
+        }
     }
 
     private BattleOutcome fight(Card player1_card, Card player2_card) {
