@@ -18,6 +18,8 @@ public class TradingController implements Controller {
         if (request.getMethod().equals("GET"))
             return getDeals(request);
         if (request.getMethod().equals("POST")) {
+            if (request.getTradingId() != null)
+                return trade(request);
             return createDeal(request);
         }
         if (request.getMethod().equals("DELETE"))
@@ -89,6 +91,35 @@ public class TradingController implements Controller {
                 } else {
                     response.setHttpStatus(HttpStatus.FORBIDDEN);
                     response.setBody("The deal contains a card that is not owned by the user.");
+                }
+            } else {
+                response.setHttpStatus(HttpStatus.NOT_FOUND);
+                response.setBody("The provided deal ID was not found");
+            }
+        } else {
+            response.setHttpStatus(HttpStatus.UNAUTHORIZED);
+            response.setBody("Access token is missing or invalid");
+        }
+        return response;
+    }
+
+    private Response trade(Request request) {
+        String username = request.getUsername();
+        String token = request.getToken();
+
+        if(tradingRepo.authenticate(username, token)) {
+            String dealId = request.getTradingId();
+            String tradingCardId = request.getBody().replaceAll("\"", "");
+
+            if (tradingRepo.dealExists(dealId)) {
+                if(tradingRepo.trade(dealId, username, tradingCardId)) {
+                    response.setHttpStatus(HttpStatus.OK);
+                    response.setBody("Trading deal successfully executed");
+                } else {
+                    response.setHttpStatus(HttpStatus.FORBIDDEN);
+                    response.setBody("The offered card is not owned by the user, the requirements are not met " +
+                            "(Type, MinimumDamage), the offered card is locked in the deck or the user " +
+                            "tried to trade with himself");
                 }
             } else {
                 response.setHttpStatus(HttpStatus.NOT_FOUND);

@@ -183,4 +183,151 @@ public class TradingRepository extends Repository {
             e.printStackTrace();
         }
     }
+
+    public boolean trade(String dealId, String username, String tradeCardID) {
+        String query = "SELECT card_id FROM trade WHERE trade_id = ?";
+        String cardID;
+        String tradeOwner;
+
+        try (Connection connection = Database.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, dealId);
+
+                ResultSet result = stmt.executeQuery();
+
+                if (result.next()) {
+                    cardID = result.getString("card_id");
+                    if (isOwner(cardID, username)) {
+                        return false;
+                    } else {
+                        if (requirementMet(cardID, username, tradeCardID) != null) {
+                            tradeOwner = getOwner(cardID);
+
+                            unlockCard(cardID);
+                            //deleteDeal(dealId, tradeOwner);
+                            changeOwner(cardID, username);
+                            changeOwner(tradeCardID, tradeOwner);
+
+                            return true;
+                        }
+                    }
+                }
+            } finally {
+                Database.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private String requirementMet(String cardID, String username, String tradeCardID) {
+        String query = "SELECT type, minDmg FROM trade WHERE card_id = ?";
+        String element;
+        int minDmg;
+
+        try (Connection connection = Database.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, cardID);
+
+                ResultSet result = stmt.executeQuery();
+
+                if (result.next()) {
+                    element = result.getString("type");
+                    minDmg = result.getInt("minDmg");
+
+                    return checkRequirement(tradeCardID, element, minDmg);
+                }
+            } finally {
+                Database.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return null;
+    }
+
+    private String checkRequirement(String tradeCardID, String type, int minDmg) {
+        String query = "SELECT username, damage, monster_type, locked FROM cards WHERE card_id = ?";
+
+        boolean monsterType;
+        monsterType = type.equals("monster");
+
+        boolean isMonster;
+        boolean locked;
+        int damage;
+        String username;
+
+        try (Connection connection = Database.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, tradeCardID);
+
+                ResultSet result = stmt.executeQuery();
+
+                if (result.next()) {
+                    damage = result.getInt("damage");
+                    isMonster = result.getBoolean("monster_type");
+                    locked = result.getBoolean("locked");
+                    username = result.getString("username");
+
+                    if (isMonster == monsterType && damage >= minDmg && !locked) {
+                        return username;
+                    }
+                }
+            } finally {
+                Database.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String getOwner(String cardID) {
+        String query = "SELECT username FROM cards WHERE card_id = ?";
+        String owner;
+
+        try (Connection connection = Database.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, cardID);
+
+                ResultSet result = stmt.executeQuery();
+
+                if (result.next()) {
+                    owner = result.getString("username");
+                    return owner;
+                }
+            } finally {
+                Database.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void changeOwner(String cardID, String username) {
+        String query = "UPDATE cards SET username = ? WHERE card_id = ?";
+
+        try (Connection connection = Database.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, username);
+                stmt.setString(2, cardID);
+
+                stmt.executeUpdate();
+
+            } finally {
+                Database.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

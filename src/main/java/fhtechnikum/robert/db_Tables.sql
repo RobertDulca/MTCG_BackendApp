@@ -55,8 +55,7 @@ create table Trade (
                        trade_id varchar(255) not null,
                        card_id varchar(255) not null,
                        type varchar(50) not null,
-                       minDmg int,
-                       element varchar(50)
+                       minDmg int
 );
 
 drop table if exists cards, packages, stats, users, session, decks, trade;
