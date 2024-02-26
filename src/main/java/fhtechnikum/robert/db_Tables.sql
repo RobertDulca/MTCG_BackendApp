@@ -33,7 +33,8 @@ create table Cards (
                        name varchar(255) not null,
                        damage float not null,
                        monster_type boolean not null,
-                       element_type varchar(50) not null
+                       element_type varchar(50) not null,
+                       locked boolean default false not null
 );
 
 create table Session (
