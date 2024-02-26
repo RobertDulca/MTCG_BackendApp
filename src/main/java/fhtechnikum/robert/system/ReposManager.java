@@ -1,5 +1,6 @@
 package fhtechnikum.robert.system;
 
+import fhtechnikum.robert.application.battle.BattleRepository;
 import fhtechnikum.robert.application.cards.CardRepository;
 import fhtechnikum.robert.application.deck.DeckRepository;
 import fhtechnikum.robert.application.packages.PackagesRepository;
@@ -26,6 +27,7 @@ public class ReposManager {
         DeckRepository deckRepo = new DeckRepository();
         StatsRepository statsRepo = new StatsRepository();
         ScoreboardRepository scoreboardRepo = new ScoreboardRepository();
+        BattleRepository battleRepo = new BattleRepository(cardRepo);
 
 
         repositories.put("user", userRepo);
@@ -35,6 +37,7 @@ public class ReposManager {
         repositories.put("deck", deckRepo);
         repositories.put("stats", statsRepo);
         repositories.put("scoreboard", scoreboardRepo);
+        repositories.put("battle", battleRepo);
     }
 
     public Map<String, Repository> getRepositories() {

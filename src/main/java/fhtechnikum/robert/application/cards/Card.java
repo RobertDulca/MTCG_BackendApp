@@ -72,7 +72,7 @@ public class Card {
 
             if (cardName.contains("Water"))
                 element_type = "Water";
-            else if (cardName.contains("Fire"))
+            else if (cardName.contains("Fire") || cardName.contains("Dragon"))
                 element_type = "Fire";
             else
                 element_type = "Regular";

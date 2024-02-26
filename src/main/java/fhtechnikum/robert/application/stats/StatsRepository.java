@@ -6,6 +6,7 @@ import fhtechnikum.robert.system.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Objects;
 
 public class StatsRepository extends Repository {
     public Stats getStats(String username) {
@@ -22,7 +23,10 @@ public class StatsRepository extends Repository {
 
                 if (result.next()) {
                     Stats stats = new Stats();
-                    stats.setUsername(result.getString("name"));
+                    if(Objects.equals(username, "admin"))
+                        stats.setUsername("admin");
+                    else
+                        stats.setUsername(result.getString("name"));
                     stats.setTotalGames(result.getInt("games_played"));
                     stats.setGamesWon(result.getInt("games_won"));
                     stats.setGamesLost(result.getInt("games_lost"));

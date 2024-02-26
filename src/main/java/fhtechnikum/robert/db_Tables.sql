@@ -59,3 +59,5 @@ create table Trade (
 );
 
 drop table if exists cards, packages, stats, users, session, decks, trade;
+
+drop table if exists cards, packages, stats, users, deck, trades, scoreboard;

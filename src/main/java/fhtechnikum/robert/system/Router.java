@@ -1,6 +1,8 @@
 package fhtechnikum.robert.system;
 
 
+import fhtechnikum.robert.application.battle.BattleController;
+import fhtechnikum.robert.application.battle.BattleRepository;
 import fhtechnikum.robert.application.cards.CardController;
 import fhtechnikum.robert.application.cards.CardRepository;
 import fhtechnikum.robert.application.deck.DeckController;
@@ -34,8 +36,8 @@ public class Router {
         DeckController deckController = new DeckController((DeckRepository) repositories.get("deck"), (CardRepository) repositories.get("card"));
         StatsController statsController = new StatsController((StatsRepository) repositories.get("stats"));
         ScoreboardController scoreboardController = new ScoreboardController((ScoreboardRepository) repositories.get("scoreboard"));
-        /*BattleController battleController = new BattleController((GameRepository) repositories.get("game"));
-        TradingController tradingController = new TradingController((TradingRepository) repositories.get("trade"));*/
+        BattleController battleController = new BattleController((BattleRepository) repositories.get("battle"));
+        /*TradingController tradingController = new TradingController((TradingRepository) repositories.get("trade"));*/
 
 
         handler.put("/users", userController);
@@ -46,8 +48,8 @@ public class Router {
         handler.put("/deck", deckController);
         handler.put("/stats", statsController);
         handler.put("/scoreboard", scoreboardController);
-        /*handler.put("/battles", battleController);
-        handler.put("/tradings", tradingController);*/
+        handler.put("/battles", battleController);
+        /*handler.put("/tradings", tradingController);*/
     }
 
     public Controller route(String path) {

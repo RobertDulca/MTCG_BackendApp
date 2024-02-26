@@ -9,12 +9,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ScoreboardRepository extends Repository {
     public List<Stats> getScoreboard() {
         List <Stats> scoreBoard = new ArrayList<>();
-        String query = "SELECT users.name, games_played, games_won, games_lost, elo FROM stats " +
-                "INNER JOIN users ON stats.username = users.username " +
+        String query = "SELECT username, games_played, games_won, games_lost, elo FROM stats " +
                 "ORDER BY elo DESC";
 
         try (Connection connection = Database.getConnection()) {
@@ -25,7 +25,7 @@ public class ScoreboardRepository extends Repository {
 
                 while (result.next()) {
                     Stats stats = new Stats();
-                    stats.setUsername(result.getString("name"));
+                    stats.setUsername(result.getString("username"));
                     stats.setTotalGames(result.getInt("games_played"));
                     stats.setGamesWon(result.getInt("games_won"));
                     stats.setGamesLost(result.getInt("games_lost"));
